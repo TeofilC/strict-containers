@@ -46,7 +46,7 @@
 --     * Logarithmic-time concatenation with '><'
 --     * Logarithmic-time splitting with 'splitAt', 'take' and 'drop'
 --     * Logarithmic-time access to any element with
---     'lookup', '!?', 'index', 'insertAt', 'deleteAt', 'adjust', and 'update'
+--     'lookup', '!?', 'index', 'insertAt', 'deleteAt', 'adjust'', and 'update'
 --
 --   Note that sequences are typically /slower/ than lists when using only
 --   operations for which they have the same big-\(O\) complexity: sequences
@@ -78,7 +78,7 @@
 --
 -- == Detailed performance information
 --
--- An amortized running time is given for each operation, with /n/ referring
+-- An amortized running time is given for each operation, with \(n\) referring
 -- to the length of the sequence and /i/ being the integral index used by
 -- some operations. These bounds hold even in a persistent (shared) setting.
 --
@@ -204,6 +204,7 @@ module Data.Strict.Sequence.Autogen (
     (!?),           -- :: Seq a -> Int -> Maybe a
     index,          -- :: Seq a -> Int -> a
     adjust,         -- :: (a -> a) -> Int -> Seq a -> Seq a
+    adjust',        -- :: (a -> a) -> Int -> Seq a -> Seq a
     update,         -- :: Int -> a -> Seq a -> Seq a
     take,           -- :: Int -> Seq a -> Seq a
     drop,           -- :: Int -> Seq a -> Seq a
@@ -296,7 +297,7 @@ onto the beginning of the second one.
 shift2Right :: Seq a -> Seq a -> (Seq a, Seq a)
 shift2Right Empty ys = (Empty, ys)
 shift2Right (Empty :|> x) ys = (Empty, x :<| ys)
-shift2Right (xs :|> x1 :|> x2) = (xs, x1 :<| x2 :<| ys)
+shift2Right (xs :|> x1 :|> x2) ys = (xs, x1 :<| x2 :<| ys)
 @
 
 @
