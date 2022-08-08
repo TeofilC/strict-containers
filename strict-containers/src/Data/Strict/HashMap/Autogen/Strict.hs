@@ -100,15 +100,10 @@ module Data.Strict.HashMap.Autogen.Strict
     , fromList
     , fromListWith
     , fromListWithKey
-
-      -- ** HashSets
-    , HS.keysSet
     ) where
 
 import Data.Strict.HashMap.Autogen.Internal.Strict
 import Prelude                      ()
-
-import qualified Data.HashSet.Internal as HS
 
 -- $strictness
 --

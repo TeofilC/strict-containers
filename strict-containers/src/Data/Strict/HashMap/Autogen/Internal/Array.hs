@@ -197,15 +197,19 @@ liftRnfArray rnf0 ary0 = go ary0 n0 0
 -- state thread, with each element containing the specified initial
 -- value.
 new :: Int -> a -> ST s (MArray s a)
-new _n@(I# n#) b =
+new n !b = new' n b
+{-# INLINE new #-}
+
+new' :: Int -> a -> ST s (MArray s a)
+new' _n@(I# n#) b =
     CHECK_GT("new",_n,(0 :: Int))
     ST $ \s ->
         case newSmallArray# n# b s of
             (# s', ary #) -> (# s', MArray ary #)
-{-# INLINE new #-}
+{-# INLINE new' #-}
 
 new_ :: Int -> ST s (MArray s a)
-new_ n = new n undefinedElem
+new_ n = new' n undefinedElem
 
 -- | When 'Exts.shrinkSmallMutableArray#' is available, the returned array is the same as the array given, as it is shrunk in place.
 -- Otherwise a copy is made.
@@ -222,7 +226,7 @@ shrink mary n = cloneM mary 0 n
 {-# INLINE shrink #-}
 
 singleton :: a -> Array a
-singleton x = runST (singletonM x)
+singleton !x = runST (singletonM x)
 {-# INLINE singleton #-}
 
 singletonM :: a -> ST s (Array a)
@@ -239,7 +243,7 @@ snoc ary x = run $ do
 {-# INLINE snoc #-}
 
 pair :: a -> a -> Array a
-pair x y = run $ do
+pair !x !y = run $ do
     ary <- new 2 x
     write ary 1 y
     return ary
@@ -252,7 +256,7 @@ read ary _i@(I# i#) = ST $ \ s ->
 {-# INLINE read #-}
 
 write :: MArray s a -> Int -> a -> ST s ()
-write ary _i@(I# i#) b = ST $ \ s ->
+write ary _i@(I# i#) !b = ST $ \ s ->
     CHECK_BOUNDS("write", lengthM ary, _i)
         case writeSmallArray# (unMArray ary) i# b s of
             s' -> (# s' , () #)

@@ -179,7 +179,7 @@ import qualified Language.Haskell.TH.Syntax  as TH
 hash :: H.Hashable a => a -> Hash
 hash = fromIntegral . H.hash
 
-data Leaf k v = L !k v
+data Leaf k v = L !k !v
   deriving (Eq)
 
 instance (NFData k, NFData v) => NFData (Leaf k v) where
