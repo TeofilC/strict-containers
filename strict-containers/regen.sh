@@ -2,7 +2,7 @@
 # Regenerate files from submodules.
 # Set CLEAN=1 to delete generated files, but don't regenerate them.
 
-set -e
+set -ex
 shopt -s nullglob globstar
 
 ensure_checkout() {
@@ -27,6 +27,7 @@ fixup_cabal() {
 }
 
 rename_modules() {
+        echo "rename_modules $1, $2, $@"
 	test -z "$CLEAN" || return 0
 	local path_r="$1"
 	local path_l="$2"
@@ -126,7 +127,7 @@ rename_modules Utils/Containers/Internal Data/Strict/ContainersUtils/Autogen \
 copy_and_rename containers/containers/src Sequence Data/Sequence "/Internal/sorting.md"
 rename_modules Utils/Containers/Internal Data/Strict/ContainersUtils/Autogen \
   src/Data/Strict/Sequence/Autogen.hs* src/Data/Strict/Sequence/Autogen/**/*.hs
-copy_and_rename vector Vector Data/Vector "" Mutable.hs
+copy_and_rename vector/vector/src Vector Data/Vector "" Mutable.hs
 
 TESTDIR=tests
 
@@ -143,10 +144,10 @@ if [ -z "$CLEAN" ]; then
 	cp -a ../contrib/containers/containers-tests/tests/IntMapValidity.hs "$TESTDIR"
 	rename_modules Data/IntMap Data/Strict/IntMap/Autogen "$TESTDIR"/IntMapValidity.hs
 	rename_modules Utils/Containers/Internal Data/Strict/ContainersUtils/Autogen "$TESTDIR"/IntMapValidity.hs
-	copy_test_and_rename unordered-containers tests/HashMapProperties.hs hashmap-strict-properties Data/HashMap Data/Strict/HashMap/Autogen
-	copy_test_and_rename vector tests/Main.hs vector-tests-O0 XXX XXX
+	copy_test_and_rename unordered-containers tests/Properties/HashMapStrict.hs hashmap-strict-properties Data/HashMap Data/Strict/HashMap/Autogen
+	copy_test_and_rename vector/vector tests/Main.hs vector-tests-O0 XXX XXX
 	mv "$TESTDIR"/Main.hs "$TESTDIR"/VectorMain.hs
-	cp -a ../contrib/vector/tests/{Tests,Boilerplater.hs,Utilities.hs} "$TESTDIR"
+	cp -a ../contrib/vector/vector/tests/{Tests,Boilerplater.hs,Utilities.hs} "$TESTDIR"
 	rm -f "$TESTDIR"/Tests/Vector/{Primitive,Unboxed,Storable}.hs
 
 	cat "$TESTS_CABAL" | fixup_cabal tests ""

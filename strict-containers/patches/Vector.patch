@@ -61,6 +61,7 @@ vector upstream CI doesn't run haddock so they don't see this issue themselves
  import           Control.Monad (when, liftM)
 -import qualified Data.Strict.Vector.Autogen.Generic.Mutable as G
 +import qualified Data.Vector.Generic.Mutable as G
+ import           Data.Strict.Vector.Autogen.Internal.Check
  import           Data.Primitive.Array
  import           Control.Monad.Primitive
  
