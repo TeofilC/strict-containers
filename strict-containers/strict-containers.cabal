@@ -81,6 +81,7 @@ library
     , strict                >= 0.4      && < 0.5
     , vector                >= 0.12     && < 0.13
     , vector-binary-instances >= 0.2    && < 0.3
+    , template-haskell
 
   exposed-modules:
     Data.Strict.HashMap
