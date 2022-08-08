@@ -458,7 +458,7 @@ m1 \\ m2 = difference m1 m2
 -- their union @m1 <> m2@ maps @k@ to @a1@.
 
 -- See Note: Order of constructors
-data Map k a  = Bin {-# UNPACK #-} !Size !k a !(Map k a) !(Map k a)
+data Map k a  = Bin {-# UNPACK #-} !Size !k !a !(Map k a) !(Map k a)
               | Tip
 
 type Size     = Int

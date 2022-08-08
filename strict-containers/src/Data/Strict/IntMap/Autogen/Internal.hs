@@ -359,7 +359,7 @@ data IntMap a = Bin {-# UNPACK #-} !Prefix
 --            the left of the Mask bit.
 -- Invariant: In (Bin prefix mask left right), left consists of the elements that
 --            don't have the mask bit set; right is all the elements that do.
-              | Tip {-# UNPACK #-} !Key a
+              | Tip {-# UNPACK #-} !Key !a
               | Nil
 
 type Prefix = Int

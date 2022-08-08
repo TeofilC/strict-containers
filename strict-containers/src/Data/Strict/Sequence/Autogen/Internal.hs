@@ -148,7 +148,6 @@ module Data.Strict.Sequence.Autogen.Internal (
     (!?),           -- :: Seq a -> Int -> Maybe a
     index,          -- :: Seq a -> Int -> a
     adjust,         -- :: (a -> a) -> Int -> Seq a -> Seq a
-    adjust',        -- :: (a -> a) -> Int -> Seq a -> Seq a
     update,         -- :: Int -> a -> Seq a -> Seq a
     take,           -- :: Int -> Seq a -> Seq a
     drop,           -- :: Int -> Seq a -> Seq a
@@ -187,11 +186,9 @@ module Data.Strict.Sequence.Autogen.Internal (
     zipWith4,       -- :: (a -> b -> c -> d -> e) -> Seq a -> Seq b -> Seq c -> Seq d -> Seq e
     unzip,          -- :: Seq (a, b) -> (Seq a, Seq b)
     unzipWith,      -- :: (a -> (b, c)) -> Seq a -> (Seq b, Seq c)
-#ifdef TESTING
     deep,
     node2,
     node3,
-#endif
     ) where
 
 import Prelude hiding (
@@ -998,7 +995,7 @@ seqDataType = mkDataType "Data.Strict.Sequence.Autogen.Seq" [emptyConstr, consCo
 
 data FingerTree a
     = EmptyT
-    | Single a
+    | Single !a
     | Deep {-# UNPACK #-} !Int !(Digit a) (FingerTree (Node a)) !(Digit a)
 #ifdef TESTING
     deriving Show
@@ -1189,10 +1186,10 @@ pullR s pr m = case viewRTree m of
 -- Digits
 
 data Digit a
-    = One a
-    | Two a a
-    | Three a a a
-    | Four a a a a
+    = One !a
+    | Two !a !a
+    | Three !a !a !a
+    | Four !a !a !a !a
 #ifdef TESTING
     deriving Show
 #endif
@@ -1294,8 +1291,8 @@ digitToTree' !_n (One a) = Single a
 -- Nodes
 
 data Node a
-    = Node2 {-# UNPACK #-} !Int a a
-    | Node3 {-# UNPACK #-} !Int a a a
+    = Node2 {-# UNPACK #-} !Int !a !a
+    | Node3 {-# UNPACK #-} !Int !a !a !a
 #ifdef TESTING
     deriving Show
 #endif
@@ -2511,25 +2508,12 @@ updateDigit v i (Four a b c d)
     sab     = sa + size b
     sabc    = sab + size c
 
--- | \( O(\log(\min(i,n-i))) \). Update the element at the specified position.  If
--- the position is out of range, the original sequence is returned.  'adjust'
--- can lead to poor performance and even memory leaks, because it does not
--- force the new value before installing it in the sequence. 'adjust'' should
--- usually be preferred.
---
--- @since 0.5.8
-adjust          :: (a -> a) -> Int -> Seq a -> Seq a
-adjust f i (Seq xs)
-  -- See note on unsigned arithmetic in splitAt
-  | fromIntegral i < (fromIntegral (size xs) :: Word) = Seq (adjustTree (`seq` fmap f) i xs)
-  | otherwise   = Seq xs
-
 -- | \( O(\log(\min(i,n-i))) \). Update the element at the specified position.
 -- If the position is out of range, the original sequence is returned.
 -- The new value is forced before it is installed in the sequence.
 --
 -- @
--- adjust' f i xs =
+-- adjust f i xs =
 --  case xs !? i of
 --    Nothing -> xs
 --    Just x -> let !x' = f x
@@ -2537,9 +2521,9 @@ adjust f i (Seq xs)
 -- @
 --
 -- @since 0.5.8
-adjust'          :: forall a . (a -> a) -> Int -> Seq a -> Seq a
+adjust          :: forall a . (a -> a) -> Int -> Seq a -> Seq a
 #ifdef __GLASGOW_HASKELL__
-adjust' f i xs
+adjust f i xs
   -- See note on unsigned arithmetic in splitAt
   | fromIntegral i < (fromIntegral (length xs) :: Word) =
       coerce $ adjustTree (\ !_k (ForceBox a) -> ForceBox (f a)) i (coerce xs)
@@ -2548,7 +2532,7 @@ adjust' f i xs
 -- This is inefficient, but fixing it would take a lot of fuss and bother
 -- for little immediate gain. We can deal with that when we have another
 -- Haskell implementation to worry about.
-adjust' f i xs =
+adjust f i xs =
   case xs !? i of
     Nothing -> xs
     Just x -> let !x' = f x
