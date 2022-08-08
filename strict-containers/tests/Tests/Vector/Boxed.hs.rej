@@ -1,0 +1,37 @@
+--- tests/Tests/Vector/Boxed.hs
++++ tests/Tests/Vector/Boxed.hs
+@@ -2,13 +2,13 @@
+ module Tests.Vector.Boxed (tests) where
+ 
+ import Test.Tasty
+-import qualified Data.Vector
++import qualified Data.Strict.Vector
+ import Tests.Vector.Property
+ 
+ import GHC.Exts (inline)
+ 
+ 
+-testGeneralBoxedVector :: forall a. (CommonContext a Data.Vector.Vector, Ord a, Data a) => Data.Vector.Vector a -> [Test]
++testGeneralBoxedVector :: forall a. (CommonContext a Data.Strict.Vector.Vector, Ord a, Data a) => Data.Strict.Vector.Vector a -> [Test]
+ testGeneralBoxedVector dummy = concatMap ($ dummy)
+   [
+     testSanity
+@@ -31,7 +31,7 @@
+   , testBoolFunctions
+   ]
+ 
+-testNumericBoxedVector :: forall a. (CommonContext a Data.Vector.Vector, Ord a, Num a, Enum a, Random a, Data a) => Data.Vector.Vector a -> [Test]
++testNumericBoxedVector :: forall a. (CommonContext a Data.Strict.Vector.Vector, Ord a, Num a, Enum a, Random a, Data a) => Data.Strict.Vector.Vector a -> [Test]
+ testNumericBoxedVector dummy = concatMap ($ dummy)
+   [
+     testGeneralBoxedVector
+@@ -41,7 +41,7 @@
+ 
+ tests =
+   [ testGroup "Bool" $
+-    testBoolBoxedVector (undefined :: Data.Vector.Vector Bool)
++    testBoolBoxedVector (undefined :: Data.Strict.Vector.Vector Bool)
+   , testGroup "Int" $
+-    testNumericBoxedVector (undefined :: Data.Vector.Vector Int)
++    testNumericBoxedVector (undefined :: Data.Strict.Vector.Vector Int)
+   ]

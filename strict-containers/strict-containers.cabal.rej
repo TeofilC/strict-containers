@@ -1,0 +1,106 @@
+--- strict-containers.cabal
++++ strict-containers.cabal
+@@ -155,12 +155,13 @@
+   hs-source-dirs:   tests
+   main-is:          map-properties.hs
+   type:             exitcode-stdio-1.0
+-  build-depends:    containers-tests
++  build-depends:    containers, strict-containers
+   build-depends:
+       array    >=0.4.0.0
+     , base     >=4.6     && <5
+     , deepseq  >=1.2     && <1.5
+ 
++  cpp-options:      -DSTRICT
+   ghc-options:      -O2
+   other-extensions:
+     BangPatterns
+@@ -179,7 +180,7 @@
+   hs-source-dirs:   tests
+   main-is:          map-strictness.hs
+   type:             exitcode-stdio-1.0
+-  build-depends:    containers-tests
++  build-depends:    containers, strict-containers
+   build-depends:
+       array                       >=0.4.0.0
+     , base                        >=4.6     && <5
+@@ -206,7 +207,7 @@
+   type:             exitcode-stdio-1.0
+   cpp-options:      -DSTRICT
+   other-modules:    IntMapValidity
+-  build-depends:    containers-tests
++  build-depends:    strict-containers
+   build-depends:
+       array    >=0.4.0.0
+     , base     >=4.6     && <5
+@@ -217,7 +218,7 @@
+     BangPatterns
+     CPP
+ 
+-  build-depends:    containers-tests
++  build-depends:    containers, strict-containers
+   build-depends:
+       HUnit
+     , QuickCheck                  >=2.7.1
+@@ -234,7 +235,7 @@
+     BangPatterns
+     CPP
+ 
+-  build-depends:    containers-tests
++  build-depends:    containers, strict-containers
+   build-depends:
+       array                       >=0.4.0.0
+     , base                        >=4.6     && <5
+@@ -256,7 +257,7 @@
+   hs-source-dirs:   tests
+   main-is:          seq-properties.hs
+   type:             exitcode-stdio-1.0
+-  build-depends:    containers-tests
++  build-depends:    strict-containers
+   build-depends:
+       array    >=0.4.0.0
+     , base     >=4.6     && <5
+@@ -285,6 +286,7 @@
+     QuickCheck >= 2.4.0.1,
+     test-framework >= 0.3.3,
+     test-framework-quickcheck2 >= 0.2.9,
++    strict-containers,
+     unordered-containers
+ 
+   default-language: Haskell2010
+@@ -294,7 +296,7 @@
+ test-suite vector-tests-O0
+   Default-Language: Haskell2010
+   type: exitcode-stdio-1.0
+-  Main-Is:  Main.hs
++  Main-Is:  VectorMain.hs
+ 
+   other-modules: Boilerplater
+                  Tests.Bundle
+@@ -302,14 +304,11 @@
+                  Tests.Vector
+                  Tests.Vector.Property
+                  Tests.Vector.Boxed
+-                 Tests.Vector.Storable
+-                 Tests.Vector.Primitive
+-                 Tests.Vector.Unboxed
+                  Tests.Vector.UnitTests
+                  Utilities
+ 
+   hs-source-dirs: tests
+-  Build-Depends: base >= 4.5 && < 5, template-haskell, base-orphans >= 0.6, vector,
++  Build-Depends: base >= 4.5 && < 5, template-haskell, base-orphans >= 0.6, vector, strict-containers,
+                  primitive, random,
+                  QuickCheck >= 2.9 && < 2.15, HUnit, tasty,
+                  tasty-hunit, tasty-quickcheck,
+@@ -330,10 +329,5 @@
+   Ghc-Options: -O0 -threaded
+   Ghc-Options: -Wall
+ 
+-  if !flag(Wall)
+-    Ghc-Options: -fno-warn-orphans -fno-warn-missing-signatures
+-    if impl(ghc >= 8.0) && impl( ghc < 8.1)
+-      Ghc-Options: -Wno-redundant-constraints
+-
+ 
+ -- DO NOT EDIT above, AUTOGEN tests
