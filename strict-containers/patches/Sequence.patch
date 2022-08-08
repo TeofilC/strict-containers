@@ -102,7 +102,7 @@ We also remove the lazy adjust function, and rename the strict adjust' to adjust
  -- @since 0.5.8
 -adjust'          :: forall a . (a -> a) -> Int -> Seq a -> Seq a
 +adjust          :: forall a . (a -> a) -> Int -> Seq a -> Seq a
- #if __GLASGOW_HASKELL__ >= 708
+ #ifdef __GLASGOW_HASKELL__
 -adjust' f i xs
 +adjust f i xs
    -- See note on unsigned arithmetic in splitAt
