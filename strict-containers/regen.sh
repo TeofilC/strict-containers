@@ -99,9 +99,9 @@ copy_test_and_rename() {
 if [ -z "$CLEAN" ]; then
 	VERSIONS_CABAL=versions.cabal.in
 	rm -f $VERSIONS_CABAL
-	ensure_checkout containers v0.6.4.1
-	ensure_checkout unordered-containers v0.2.13.0
-	ensure_checkout vector v0.12.3.0
+	ensure_checkout containers v0.6.6
+	ensure_checkout unordered-containers v0.2.19.1
+	ensure_checkout vector vector-0.13.0.0
 	cat $VERSIONS_CABAL | fixup_cabal versions ""
 	rm -f $VERSIONS_CABAL
 else
